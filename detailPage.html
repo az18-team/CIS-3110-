@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Andy's Dream Garage of Cars & Motorcycles!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script>
+        $(function() { //shorthand for document when ready
+            //breakUpURLParameters(); //firtst things first, grab the url params and format the page
+            $("#u").click(function() {
+                //alert("testing this");
+                var h = "cars.html"; //
+                console.log(h); //should be prior url visited, before here
+                window.location.href = h;
+            });
+
+            function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(";");
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+            //url param handling
+            var url = window.location.href;
+            var captions = ["The new NSX is a hybrid sports car powered by 3.5 L twin-turbo V6 engine and three electric motors, two of which form part of the SH-AWD all wheel drive drivetrain, altogether capable of close to 600 hp. The transmission is a 9-speed dual-clutch semi-automatic.",
+                "Available only in a three-box-sedan body style—which it shares with the lesser but nearly as capable and less expensive Subaru WRX—the STI is a familiar and properly rapid road rocket with standard all-wheel drive, a six-speed manual transmission, and a 310-hp turbocharged flat-four engine.",
+                "The Audi R8 is a mid-engine, 2-seater sports car, which uses Audi's trademark quattro permanent all-wheel drive system. It was introduced by the German car manufacturer Audi AG in 2006.",
+                "The new NSX is a hybrid sports car powered by 3.5 L twin-turbo V6 engine and three electric motors, two of which form part of the SH-AWD all wheel drive drivetrain, altogether capable of close to 600 hp. The transmission is a 9-speed dual-clutch semi-automatic.",
+                "The Porsche 911 (pronounced Nine Eleven or in German: Neunelfer) is a two-door, 2+2 high performance rear-engined sports car made since 1963 by Porsche AG of Stuttgart, Germany. It has a rear-mounted flat-six engine and all round independent suspension.",
+                "Volkswagen Golf. The Volkswagen Golf ( listen (help. ... The original Golf Mk1 was a front-wheel drive, front-engined replacement for the air-cooled, rear-engined, rear-wheel drive Volkswagen Beetle."
+            ];
+            var titles = ["Acura NSX",
+            "Subaru WRX",
+            "Audi R8",
+            "Honda NSX",
+            "Porsche911S",
+            "Volkswagen Golf MK1"
+            ];
+            console.log("url = " + url);
+            var x = breakUpURLParameters(url);
+            var indexNumber = x.search.indexNo;
+            var cookies = getCookie("image");
+            document.title = titles[indexNumber] + "'s Detail Page";
+            console.log(x.search);
+            console.log("img url  = " + x.search.img); //please refer to http://www.w3schools.com/jsref/jsref_map.asp for example code
+            var div = document.createElement("div");
+            div.setAttribute("class", "divdetail")
+            var t = document.getElementById("effectDiv"); //grab the div and use the following lines to attach the image to it
+            var y = document.createElement("img");
+            var titleAbove = document.createElement("h2");
+            var c = document.createElement("p");
+            var fav = document.createElement("img");
+            var textNode = document.createTextNode(captions[indexNumber]);
+            var titleNode = document.createTextNode(titles[indexNumber]);
+            y.setAttribute("src", x.search.img); // set up and assign img src
+            y.setAttribute("class", "pctImg"); //uses css class, be sure it's in the head area
+            titleAbove.appendChild(titleNode);
+            titleAbove.setAttribute("class", "detailCenter");
+            t.appendChild(y); //populate div with image, via url parameters
+            c.setAttribute("class", "centerDescription");
+            c.appendChild(textNode);
+            div.appendChild(titleAbove);
+            if (cookies == x.search.img) {
+                fav.setAttribute("src", "star.jpg");
+                fav.setAttribute("class", "picStarDetail");
+                div.appendChild(fav);
+            }
+            div.appendChild(y);
+            div.appendChild(c);
+            document.body.appendChild(div);
+
+            function breakUpURLParameters(url) { //analyze and output the url parameters as a useful array to caller
+                //  create a link in the DOM and set its href
+                var link = document.createElement('a');
+                link.setAttribute('href', url);
+                console.log("path variable is " + url);
+                //  return an easy-to-use object that breaks apart the path
+                return {
+                    host: link.hostname, //  'example.com'
+                    port: link.port, //  12345
+                    search: mapMaker(link.search), //  {startIndex: 1, pageSize: 10}
+                    path: link.pathname, //  '/blog/foo/bar'
+                    protocol: link.protocol //  'http:'
+                }
+            }
+
+            function mapMaker(search, preserveDuplicates) { //responsible for obtaining all url params, representing them into an array
+                //  option to preserve duplicate keys (e.g. 'sort=name&sort=age')
+                preserveDuplicates = preserveDuplicates || false; //  disabled by default
+                var outputNoDupes = {};
+                var returnableArray = []; //  optional output array to preserve duplicate keys
+                //  sanity check
+                if (!search) throw new Error('mapMaker: your search input param is misformed?');
+                //  remove ? character from your url (?foo=1&bar=2 -> 'foo=1&bar=2')
+                search = search.split('?')[1];
+                //  split apart your keys into a useful array of key/value pairs ('foo=1&bar=2' -> ['foo=1', 'bar=2'])
+                search = search.split('&');
+                //  separate keys from values (['foo=1', 'bar=2'] -> [{foo:1}, {bar:2}])
+                //  then package as an array for your caller to use as variables
+                returnableArray = search.map(function(keyval) {
+                    var out = {};
+                    keyval = keyval.split('=');
+                    out[keyval[0]] = keyval[1];
+                    outputNoDupes[keyval[0]] = keyval[1]; //  might as well do the no-dupe work too while we're in the loop
+                    return out;
+                });
+                return (preserveDuplicates) ? returnableArray : outputNoDupes;
+            }
+        });
+    </script>
+</head>
+
+<body class="detailPage">
+
+    <div class="title">
+        <h1>Cars!</h1>
+    </div>
+    <nav class="navbar navbar-dark bg-dark">
+  <!-- Navbar content -->
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link active" href="crypto.html">Cars <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="cryptotrade.html">Motorcycles</a>
+      <a class="nav-item nav-link" href="generic.html">About Me</a>
+      <a class="nav-item nav-link" href="Privacy.html">Send me your thoughts!</a>
+    </div>
+  </div>
+</nav>
+    <div id="effectDiv">
+        <button id="u" style="
+    background-color: #585F69;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+	margin-top: 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    float:left;
+">Back</button>
+    </div>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+
+</html>
